@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :elixir_api, ElixirApi.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "",
   hostname: "localhost",
   database: "elixir_api_dev",
   stacktrace: true,
