@@ -39,6 +39,10 @@ config :logger, :default_formatter,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :elixir_api, ElixirApi.Guardian,
+  issuer: "elixir_api",
+  secret_key: "/DY3StpfVNCSlNrCpCgWVrQG/kKc7bcCnc1ExygLtA5u5ASvGli6xF35nkbYfcyR" # replace with mix phx.gen.secret
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

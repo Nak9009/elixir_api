@@ -3,6 +3,7 @@ defmodule ElixirApiWeb.UserController do
 
   alias ElixirApi.Accounts
   alias ElixirApi.Accounts.User
+  alias ElixirApi.Guardian
 
   action_fallback ElixirApiWeb.FallbackController
 
@@ -39,5 +40,33 @@ defmodule ElixirApiWeb.UserController do
     with {:ok, %User{}} <- Accounts.delete_user(user) do
       send_resp(conn, :no_content, "")
     end
+  end
+
+  # Login action
+  def login(conn, %{"email" => email, "password" => password}) do
+    case Accounts.authenticate_user(email, password) do
+      {:ok, user} ->
+        {:ok, token, _claims} = Guardian.encode_and_sign(user)
+        json(conn, %{token: token})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{error: reason})
+    end
+  end
+
+  def profile(conn, _params) do
+    user = Guardian.Plug.current_resource(conn)
+
+    json(conn, %{
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      age: user.age,
+      role: user.role,
+      inserted_at: user.inserted_at,
+      updated_at: user.updated_at
+    })
   end
 end

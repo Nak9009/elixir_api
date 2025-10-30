@@ -5,10 +5,21 @@ defmodule ElixirApiWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug ElixirApiWeb.AuthPipeline
+  end
+
   scope "/api", ElixirApiWeb do
     pipe_through :api
 
+    post "/login", UserController, :login
     resources "/users", UserController, except: [:new, :edit]
+  end
+
+  scope "/api", ElixirApiWeb do
+    pipe_through [:api, :auth]  # Protected routes
+
+    get "/profile", UserController, :profile
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
